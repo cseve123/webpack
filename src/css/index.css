@@ -1,7 +1,7 @@
 @font-face {
   font-family: "webfont";
   font-display: swap;
-  src: url("webfont.woff2") format("woff2");
+  src: url("../media/webfont.woff2") format("woff2");
 }
 
 body {
