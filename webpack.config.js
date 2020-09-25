@@ -66,6 +66,8 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin'); // html处理
 const { CleanWebpackPlugin } = require('clean-webpack-plugin'); // 打包清除
 const MiniCssExtractPlugin = require('mini-css-extract-plugin'); // css单文件处理
+const webpack = require('webpack');
+
 console.log('______________________', process.env.NODE_ENV);
 module.exports = {
     module: {
@@ -138,8 +140,34 @@ module.exports = {
         }),
         new MiniCssExtractPlugin({
             filename: '[name]_[hash:8].css'
-        })
+        }),
+        // HMR完全启动的配合
+        new webpack.HotModuleReplacementPlugin()
     ],
-    devtool: 'nosources-source-map',
-    mode: 'development'
+    devtool: 'source-map',
+    mode: 'development',
+    devServer: {
+        contentBase: './dist', // 最好绝对路径
+        open: true, // 打开浏览器
+        port: 8081,
+        compress: true, // 静态文件gzip
+        hot: true, // HMR
+        hotOnly: true, // HMR不生效，浏览器不自刷新，就开启hotOnly
+        overlay: { // 编译器错误或警告时
+            warnings: true,
+            errors: true
+        },
+        proxy: { // 代理
+            '/api': {
+                target: 'http://localhost:9092'
+            }
+        }
+    },
+    // watch: true,  // 轮询监听文件变化，默认不开
+    // watchOptions: { 
+    //     ignored: /node_modules/,
+    //     aggregateTimeout: 300, // 监听文件变化后等300ms再去执行
+    //     poll: 1000 //ms, 判断文件是否发生变化是通过不停的询问指定文件
+    // }
+
 }
