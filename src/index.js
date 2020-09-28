@@ -9,6 +9,9 @@ import './css/index.less';
 import axios from 'axios';
 import * as VarA from './number';
 
+// webpack 配置了useBuiltIns: 'usage'则不需要
+import '@babel/polyfill';  // polyfill ES6补充polyfill
+
 var img = new Image();
 img.src = pic;
 img.classList.add('logo');
@@ -28,3 +31,10 @@ if (module.hot) {
         console.log('js手动模块，这个模块改动了', VarA.default);
     })
 }
+
+// babel转义测试
+const arr = [new Promise(()=> {}), new Promise(()=> {})];
+ 
+arr.map(item=> {
+    console.log('babel', item);
+})

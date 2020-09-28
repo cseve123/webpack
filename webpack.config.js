@@ -128,6 +128,30 @@ module.exports = {
                     'postcss-loader',
                     'less-loader'
                 ]
+            },
+            {
+                test: /\.js$/,
+                use: {
+                    loader: 'babel-loader',
+                    // options: {
+                    //     presets: [
+                    //         [
+                    //             '@babel/preset-env',
+                    //             {
+                    //                 targets: {
+                    //                     edge: '17',
+                    //                     firefox: '60',
+                    //                     chrome: '67',
+                    //                     safari: '11.1'
+                    //                 },
+                    //                 corejs: 2,
+                    //                 useBuiltIns: 'usage' // 按需注入，这个值不用在入口import @babel/polyfill
+                    //             }
+                    //         ]
+                    //     ]
+                    // }
+                },
+                exclude: /node_modules/
             }
         ]
     },
