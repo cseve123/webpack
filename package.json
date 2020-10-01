@@ -22,6 +22,7 @@
     "css-loader": "^4.3.0",
     "express": "^4.17.1",
     "file-loader": "^6.1.0",
+    "glob": "^7.1.6",
     "html-webpack-plugin": "^4.5.0",
     "less": "^3.12.2",
     "less-loader": "^7.0.1",
@@ -36,7 +37,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev_old": "set NODE_ENV=development && npx webpack",
-    "dev": "cross-env NODE_ENV=development npx webpack-dev-server --color",
+    "dev": "cross-env NODE_ENV=development npx webpack --color",
     "server": "node server.js",
     "watch_old": "npx webpack --watch"
   },

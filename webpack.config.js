@@ -67,9 +67,37 @@ const HtmlWebpackPlugin = require('html-webpack-plugin'); // html处理
 const { CleanWebpackPlugin } = require('clean-webpack-plugin'); // 打包清除
 const MiniCssExtractPlugin = require('mini-css-extract-plugin'); // css单文件处理
 const webpack = require('webpack');
-
+const path = require('path');
+const glob = require('glob');  // glob.sync第三方库来匹配路径
 console.log('______________________', process.env.NODE_ENV);
+
+const setMPA = () => {
+    const entry = {};
+    const htmlWebpackPlugins = [];
+    const entryFiles = glob.sync(path.join(__dirname, './src/*/index.js'));
+    entryFiles.map((item, index) => {
+        const entryFile = entryFiles[index];
+        const match = entryFile.match(/src\/(.*)\/index\.js$/);
+        console.log(match);
+        const pageName = match || match[1];
+        entry[pageName] = entryFile;
+        htmlWebpackPlugins.push(
+            new HtmlWebpackPlugin({
+                title: pageName,
+                template: path.join(__dirname, `src/${pageName}/index.html`),
+                inject: true
+            })
+        )
+    })
+
+    return {
+        entry,
+        htmlWebpackPlugins
+    }
+}
+const { entry, htmlWebpackPlugins } = setMPA();
 module.exports = {
+    entry,
     module: {
         rules: [
             // {  // file-loader 处理文件
@@ -157,11 +185,7 @@ module.exports = {
     },
     plugins: [
         new CleanWebpackPlugin(),
-        new HtmlWebpackPlugin({
-            title: 'HtmlWebpackPlugin',
-            template: './src/index.html',
-            filename: 'index.html'
-        }),
+        ...htmlWebpackPlugins, 
         new MiniCssExtractPlugin({
             filename: '[name]_[hash:8].css'
         }),
