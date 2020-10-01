@@ -71,20 +71,24 @@ const path = require('path');
 const glob = require('glob');  // glob.sync第三方库来匹配路径
 console.log('______________________', process.env.NODE_ENV);
 
+// 多页面配置方案比较通用
 const setMPA = () => {
     const entry = {};
     const htmlWebpackPlugins = [];
     const entryFiles = glob.sync(path.join(__dirname, './src/*/index.js'));
+    console.log('array>>>>>>>>>>>>>>>', entryFiles)
     entryFiles.map((item, index) => {
-        const entryFile = entryFiles[index];
+        const entryFile = entryFiles[index];  // 绝对路径有问题读的是本地文件开始的
+        console.log('~~~~~~~~~~~~~~~~~~~~~', entryFile);
         const match = entryFile.match(/src\/(.*)\/index\.js$/);
-        console.log(match);
-        const pageName = match || match[1];
+        const pageName = match && match[1];
         entry[pageName] = entryFile;
         htmlWebpackPlugins.push(
             new HtmlWebpackPlugin({
                 title: pageName,
+                filename: `${pageName}.html`,
                 template: path.join(__dirname, `src/${pageName}/index.html`),
+                chunks: [pageName],
                 inject: true
             })
         )
@@ -96,6 +100,8 @@ const setMPA = () => {
     }
 }
 const { entry, htmlWebpackPlugins } = setMPA();
+
+console.log('>>>>>>>>>>', entry);
 module.exports = {
     entry,
     module: {
