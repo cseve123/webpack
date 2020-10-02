@@ -104,6 +104,25 @@ const { entry, htmlWebpackPlugins } = setMPA();
 console.log('>>>>>>>>>>', entry);
 module.exports = {
     entry,
+    resolve: {
+        // 确定第三方查找路径
+        modules: [path.join(__dirname, './node_modules')],
+        // 别名映射
+        alias: {
+            'aliasReact': path.join(__dirname, './node_modules/react/umd/react.production.min.js'),
+            'aliasReactDom': path.join(__dirname,'./node_modules/react-dom/umd/react-dom.production.min.js')
+        },
+        // 导入文件不用带后缀的配置
+        extensions: ['.js', '.json', '.ts', '.jsx'],
+        // 静态资源引入不打包
+        // externals: {
+        //     // 通过script引入，可在模块中import
+        //     'jquery': 'jQuery'
+        // }
+    },
+    output: {
+        // publicPath: '//cdn' // 对于静态资源的cdn路径
+    },
     module: {
         rules: [
             // {  // file-loader 处理文件
@@ -125,7 +144,9 @@ module.exports = {
                         limit: 2048,
                         outputPath: 'media/'
                     }
-                }
+                },
+                // 缩小loader范围
+                include: path.resolve(__dirname, './src')
             },
             {
                 test: /\.woff2$/,
