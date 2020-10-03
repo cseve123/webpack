@@ -69,6 +69,8 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin'); // css单文件
 const webpack = require('webpack');
 const path = require('path');
 const glob = require('glob');  // glob.sync第三方库来匹配路径
+// css 压缩
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 console.log('______________________', process.env.NODE_ENV);
 
 // 多页面配置方案比较通用
@@ -89,7 +91,13 @@ const setMPA = () => {
                 filename: `${pageName}.html`,
                 template: path.join(__dirname, `src/${pageName}/index.html`),
                 chunks: [pageName],
-                inject: true
+                inject: true,
+                // 压缩html
+                minify: {
+                    removeComments: true, // 删注释
+                    collapseWhitespace: true, // 删空格和换行符
+                    minifyCSS: true  // 压缩内联css
+                }
             })
         )
     })
@@ -214,10 +222,20 @@ module.exports = {
         new CleanWebpackPlugin(),
         ...htmlWebpackPlugins, 
         new MiniCssExtractPlugin({
-            filename: '[name]_[hash:8].css'
+            filename: 'css/[name]_[hash:8].css'
         }),
         // HMR完全启动的配合
-        new webpack.HotModuleReplacementPlugin()
+        new webpack.HotModuleReplacementPlugin(),
+        // css 压缩
+        new OptimizeCssAssetsPlugin({
+            // cssnano 配置压缩选项
+            cssProcessor: require('cssnano'),
+            cssProcessorOptions: {
+                discardComments: {
+                    removeAll: true
+                }
+            }
+        })
     ],
     devtool: 'source-map',
     mode: 'development',
