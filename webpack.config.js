@@ -71,6 +71,9 @@ const path = require('path');
 const glob = require('glob');  // glob.sync第三方库来匹配路径
 // css 压缩
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+// css tree shaking
+const PurifyCss = require('purifycss-webpack');
+const globAll = require('glob-all');
 console.log('______________________', process.env.NODE_ENV);
 
 // 多页面配置方案比较通用
@@ -235,6 +238,14 @@ module.exports = {
                     removeAll: true
                 }
             }
+        }),
+        // css tree shaking
+        new PurifyCss({
+            paths: globAll.sync([
+                //需要弄的路径html,js
+                path.resolve(__dirname, './src/*.html'),
+                path.resolve(__dirname, './src*.js')
+            ])
         })
     ],
     devtool: 'source-map',
