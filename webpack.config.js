@@ -77,6 +77,34 @@ const globAll = require('glob-all');
 const ENV = process.env.NODE_ENV;
 console.log('______________________', process.env.NODE_ENV);
 
+// 工具类的
+// 各个插件和loader的消耗时间
+const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
+const smp = new SpeedMeasurePlugin();
+// module.exports = smp.wrap(config);  // 包所有的配置
+
+// webpack打包的模块依赖关系
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+// DllPlugin 抽离模块缓存
+const { DllPlugin } = require('webpack');
+// new DllPlugin({
+//     path: path.join(__dirname, './dll', '[name]-manifest.json'),
+//     name: 'react'
+// })
+
+// happypack 多任务执行
+// const HappyPack = require('happypack');
+// const happyThreadPool = HappyPack.happyThreadPool({
+//     size: os.cups().length
+// })
+// loader里
+// use: ['happypack/loader?id=css']
+// plugins里
+// new HappyPack({
+//     id: 'css',
+//     loaders: ['style-loader', 'css-loader']
+// })
+
 // 多页面配置方案比较通用
 const setMPA = () => {
     const entry = {};
@@ -255,7 +283,9 @@ module.exports = {
                 path.resolve(__dirname, './src/*.html'),
                 path.resolve(__dirname, './src*.js')
             ])
-        })
+        }),
+        // 打包后的依赖关系
+        new BundleAnalyzerPlugin()
     ],
     devtool: 'source-map',
     mode: ENV,
