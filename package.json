@@ -47,9 +47,11 @@
     "prd_env": "cross-env NODE_ENV=production npx webpack --config ./webpack.prodution.js",
     "prd_config": "npx webpack --config ./webpack.merge.js --env.production",
     "dev": "cross-env NODE_ENV=development npx webpack --color",
+    "build": "cross-env NODE_ENV=production npx webpack",
     "server": "node server.js",
     "watch_old": "npx webpack --watch"
   },
+  "sideEffects": ["*.css", "@babel/polyfill"],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/cseve123/webpack.git"

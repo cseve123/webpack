@@ -74,6 +74,7 @@ const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 // css tree shaking
 const PurifyCss = require('purifycss-webpack');
 const globAll = require('glob-all');
+const ENV = process.env.NODE_ENV;
 console.log('______________________', process.env.NODE_ENV);
 
 // 多页面配置方案比较通用
@@ -125,11 +126,19 @@ module.exports = {
         },
         // 导入文件不用带后缀的配置
         extensions: ['.js', '.json', '.ts', '.jsx'],
+
         // 静态资源引入不打包
         // externals: {
         //     // 通过script引入，可在模块中import
         //     'jquery': 'jQuery'
         // }
+    },
+    optimization: {
+        usedExports: true,  // 开启js tree shaking,仅支持ES6module
+        splitChunks: {
+            chunks: "all"  // 默认的代码分片，还可以具体在配置minisize等
+        },
+        concatenateModules: true  // 作用域提升，让依赖关系代码尽量在一个函数里
     },
     output: {
         // publicPath: '//cdn' // 对于静态资源的cdn路径
@@ -249,7 +258,7 @@ module.exports = {
         })
     ],
     devtool: 'source-map',
-    mode: 'development',
+    mode: ENV,
     devServer: {
         contentBase: './dist', // 最好绝对路径
         open: true, // 打开浏览器
