@@ -5,7 +5,7 @@
 // 得到了:入口文件、入口文件引入的模块（引入路径，在项目里的路径），可以在浏览器里执行代码
 // 4. 修改数组以键值方式，找到并存储引入模块的项目路径
 // 5. 将入后AST，转换成可运行代码，需要用到@babel/core和@babel/preset-env
-// 6. TODO 解析所有的模块
+// 6. 解析所有的模块，循环递归
 const fs = require('fs');
 const path = require('path');
 const parser = require('@babel/parser');  // 解析代码，返回抽象树
@@ -126,7 +126,7 @@ const fenximokuai = (filename) => {
     const { code } = babel.transformFromAst(Ast, null, {
         presets: ['@babel/preset-env']
     });
-    console.log(dependencies);
+    // console.log(dependencies);
     return {
         filename,
         dependencies,
@@ -134,5 +134,51 @@ const fenximokuai = (filename) => {
     }
 }
 
-const moduleInfo = fenximokuai('./src/index/index.js');
-console.log(moduleInfo);
+// 6. 解析所有模块,循环递归
+const makeDependenciesGraph = (entry) => {
+    const entryModule = fenximokuai(entry);
+    const graphArray = [ entryModule ];
+    for (let i = 0;i< graphArray.length; i++) {
+        const item = graphArray[i];
+        const { dependencies } = item;
+        if ( dependencies ) {
+            for (let j in dependencies) {
+                graphArray.push(
+                    fenximokuai(dependencies[j])
+                );
+            }
+        }
+    }
+    // 每个路径的键值对
+    const graph = {};
+    graphArray.forEach(item => {
+        graph[item.filename] = {
+            dependencies: item.dependencies,
+            code: item.code
+        }
+    })
+    console.log(graph);
+    return graph;
+}
+
+const generateCode = ( entry ) => {
+    console.log(makeDependenciesGraph(entry));
+    // const graph = JSON.stringify(makeDependenciesGraph(entry));
+    // return `
+    //     (function (graph) {
+    //         function require(module) {
+    //             function localRequire(relativePath) {
+    //                 return require(graph[module].dependencies[relativePath]);
+    //             }
+    //             var exports = {};
+    //             (function(require, exports, code){
+    //                 eval(code)
+    //             })(localRequire, exports, graph[module].code);
+    //             return exports;
+    //         };
+    //         require('${entry}');
+    //     })(${graph});
+    // `
+}
+const moduleInfo = generateCode('./src/index/index.js');
+console.log('infoxxxxxxxxxxxxx', moduleInfo);
