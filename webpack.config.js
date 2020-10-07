@@ -104,6 +104,8 @@ const { DllPlugin } = require('webpack');
 //     id: 'css',
 //     loaders: ['style-loader', 'css-loader']
 // })
+// 自定义plguin
+const CopyrightWebpackPlugin = require('./plugin');
 
 // 多页面配置方案比较通用
 const setMPA = () => {
@@ -235,6 +237,15 @@ module.exports = {
             {
                 test: /\.js$/,
                 use: {
+                    loader: path.resolve(__dirname, './loader.js'),
+                    options: {
+                        name: 'goods'    
+                    }
+                }
+            },
+            {
+                test: /\.js$/,
+                use: {
                     loader: 'babel-loader',
                     // options: {
                     //     presets: [
@@ -285,7 +296,11 @@ module.exports = {
             ])
         }),
         // 打包后的依赖关系
-        new BundleAnalyzerPlugin()
+        new BundleAnalyzerPlugin(),
+        // 自定义plguin
+        new CopyrightWebpackPlugin({
+            name: '自定义'
+        })
     ],
     devtool: 'source-map',
     mode: ENV,
