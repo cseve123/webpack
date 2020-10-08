@@ -14,7 +14,9 @@
 //             }
 //         ],
 //         "@babel/preset-react"
-//     ]
+//     ],
+//     // 开启缓存利用下次编译
+//     "cacheDirectory": true
 // }
 
 {

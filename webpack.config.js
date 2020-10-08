@@ -273,7 +273,8 @@ module.exports = {
         new CleanWebpackPlugin(),
         ...htmlWebpackPlugins, 
         new MiniCssExtractPlugin({
-            filename: 'css/[name]_[hash:8].css'
+            // contenthash以内容为建立hash,独立文件利于缓存
+            filename: 'css/[name]_[contenthash:8].css'
         }),
         // HMR完全启动的配合
         new webpack.HotModuleReplacementPlugin(),
