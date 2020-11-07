@@ -322,7 +322,7 @@ module.exports = {
             }
         }
     },
-    // watch: true,  // 轮询监听文件变化，默认不开
+    // watch: true,  // 轮询监听文件变化，默认不开  watch和watchOptions是自动更新，devserver默认开启
     // watchOptions: { 
     //     ignored: /node_modules/,
     //     aggregateTimeout: 300, // 监听文件变化后等300ms再去执行
