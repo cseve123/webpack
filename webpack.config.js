@@ -316,7 +316,7 @@ module.exports = {
             warnings: true,
             errors: true
         },
-        proxy: { // 代理api
+        proxy: { // 代理api 返回数据
             '/api': {
                 target: 'http://localhost:9092'
             }
